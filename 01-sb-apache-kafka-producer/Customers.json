@@ -1,0 +1,17 @@
+[
+	{
+		"customerId": 101,
+		"customerName": "Indrajeetydv",
+		"customerEmail": "indrajeet.yadav@credit-suisse.com"
+	},
+	{
+		"customerId": 102,
+		"customerName": "vikas",
+		"customerEmail": "viaks.jadhav@credit-suisse.com"
+	},
+	{
+		"customerId": 103,
+		"customerName": "ganesh",
+		"customerEmail": "ganesh.singh@credit-suisse.com"
+	}
+]
