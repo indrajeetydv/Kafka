@@ -177,7 +177,171 @@ By **dividing orders across multiple counters (partitions)**, the restaurant ser
 
 **TL;DR:** Partitions make Kafka **scalable, fast, and fault-tolerant** while ensuring **parallelism and message ordering**.
 
+# Apache Kafka Overview
 
+## Main Components of Kafka
+1. **Producer**: Sends data (messages) to Kafka topics.
+2. **Consumer**: Reads data from topics.
+3. **Topic**: A category/feed to which records are sent.
+4. **Broker**: Kafka server that stores and serves messages.
+5. **Zookeeper**: Manages metadata, cluster coordination (in older versions; Kafka Raft is replacing it).
+6. **Partition**: A topic is split into partitions to allow parallel processing.
+7. **Consumer Group**: A group of consumers that share the workload.
 
+## What is Apache Kafka?
+- Apache Kafka is a **distributed streaming platform** designed for building real-time data pipelines and streaming applications. It is used to publish, subscribe to, store, and process streams of records in real-time.
+- Kafka is often used for:
+  - Messaging (pub-sub)
+  - Log aggregation
+  - Stream processing
+  - Event sourcing
+  - Real-time analytics
 
+## What is Kafka Topic and Partition?
+- A **Topic** is a logical stream of data.
+- A **Partition** is a unit of parallelism. A topic is divided into one or more partitions to allow scaling.
+
+### Example: 
+1. Topic: orders 
+2. Partition: 3
+
+- Producers write to partitions; consumers read from them.
+- Each partition is an ordered, immutable sequence of records.
+
+## How does Kafka ensure Fault Tolerance?
+Kafka achieves fault tolerance using:
+- **Replication**: Each partition can have multiple replicas (1 leader, rest followers).
+- If the leader fails, a follower is promoted.
+- Data durability is achieved by writing to disk and replicating across brokers.
+
+## What is Kafka Broker?
+A Kafka Broker is a Kafka server that:
+- Stores topic data.
+- Handles producer requests and consumer fetches.
+- Manages partition leadership and replication.
+- In a Kafka cluster, each broker has an ID and handles a subset of partitions.
+
+## What is Zookeeper used for in Kafka?
+- In versions < 2.8, Kafka uses Zookeeper to:
+  - Maintain metadata (broker info, topic configs).
+  - Handle leader election.
+  - Track cluster state.
+- Newer Kafka versions (2.8+) introduced **KRaft mode**, removing the need for Zookeeper.
+
+## Difference between Kafka and Traditional Messaging Systems like RabbitMQ
+
+| Feature        | Kafka      | RabbitMQ |
+|---------------|-----------|----------|
+| Model        | Log-based  | Message Queue |
+| Message Retention | Time-based | Consumed & gone |
+| Throughput    | High       | Moderate |
+| Persistence   | Yes (disk) | Optional |
+| Consumer Model | Pull      | Push |
+
+## What is Kafka Consumer Group?
+A **Consumer Group** is a set of consumers that work together to consume messages from a topic.
+- Each partition is read by only one consumer in a group.
+- Enables load balancing of messages.
+- Kafka tracks offsets per consumer group.
+
+## What is Offset in Kafka?
+- An **offset** is a unique identifier for each message in a partition.
+- Kafka tracks the offset to know which messages have been consumed.
+- Consumers commit offsets manually or automatically.
+- We can replay messages by resetting offsets.
+
+## How is Message Ordering Maintained in Kafka?
+- Message ordering is **guaranteed within a partition**, not across partitions.
+- If strict ordering is required, ensure all related messages go to the same partition using a **key-based partitioner**.
+
+## How does Kafka handle Backpressure?
+Kafka handles backpressure using:
+- **Consumer lag monitoring**.
+- **Flow control via consumer pull model**.
+- **Disk-based persistence** (no in-memory queues).
+- If consumers are slow, messages accumulate in Kafka without loss (based on retention policy).
+
+## Difference between Kafka At-Least-Once, At-Most-Once, and Exactly-Once Delivery
+
+| Delivery Mode  | Description |
+|---------------|-------------|
+| **At least once** | Message may be redelivered. Default, safe for most apps. |
+| **At most once** | Messages delivered once, but might be lost. |
+| **Exactly once** | Messages delivered once and only once (Kafka 0.11+). |
+
+- Kafka uses **idempotent producers** and **transactional APIs** to support exactly-once semantics.
+
+## What is a Kafka Producer and How does it work?
+A **Kafka Producer** sends records to a topic.
+
+### Features:
+- **Asynchronous and synchronous sends**.
+- **Configurable retries, acks, and batching**.
+- **Can assign partitions manually or use a partitioner**.
+
+## What is Log Compaction in Kafka?
+- **Log Compaction** retains only the latest value for each key within a topic.
+
+### Useful for:
+- Storing state.
+- Event sourcing.
+- Changelog topics.
+
+- Kafka removes older messages with the same key.
+
+## How can you monitor Kafka?
+### Monitoring Tools:
+- Kafka JMX metrics.
+- Prometheus + Grafana.
+- Confluent Control Center.
+- Burrow for lag monitoring.
+
+### What to monitor:
+- Broker health.
+- Consumer lag.
+- Partition distribution.
+- Throughput and latency.
+
+## What are Kafka Streams?
+- **Kafka Streams** is a Java library for building real-time stream processing apps on top of Kafka.
+
+### Features:
+- Stateful and stateless processing.
+- Windowed aggregations.
+- Joins and transformations.
+- Built-in fault tolerance and scalability.
+
+## What is the role of ISR (In-Sync Replicas)?
+- **ISR** is a set of replicas that are in sync with the leader (i.e., have caught up with all writes).
+  - Only ISR can be promoted to leader.
+  - If ISR falls below a minimum size, Kafka may block writes (depending on config).
+
+## How is Replication handled in Kafka?
+- Kafka replicates each partition to multiple brokers.
+  - One replica is elected as **leader**.
+  - Others are **followers**.
+  - Producers write to the leader, followers replicate.
+  - Kafka uses **ISR** to manage replication state.
+
+## How do you achieve Scalability in Kafka?
+Kafka is scalable via:
+- **Partitioning**: More partitions → Parallelism.
+- **Multiple brokers**: Distribute partitions.
+- **Consumer groups**: Distribute consumption.
+
+We can scale:
+- Producers.
+- Consumers.
+- Brokers independently.
+
+## How can you ensure Message Durability in Kafka?
+To ensure message durability:
+- Set `acks=all` in producer.
+- Use replication (e.g., `replication.factor=3`).
+- Enable log flushing and fsync.
+- Monitor ISR and broker health.
+
+- Kafka writes data to disk before acknowledging producers.
+
+  
 
