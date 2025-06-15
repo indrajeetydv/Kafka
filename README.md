@@ -1,3 +1,14 @@
+## Kafka Architecture:
+![image](https://github.com/user-attachments/assets/1647bb07-190a-4191-a28e-d6964fdbc324)
+
+![image](https://github.com/user-attachments/assets/12b2f5bc-0528-4287-8a7e-8cef29142e66)
+
+![image](https://github.com/user-attachments/assets/d0b4516c-7322-4c7c-93a0-c5005ae5a605)
+
+- https://www.educative.io/courses/mastering-apache-kafka/apache-kafka-architecture
+- https://www.scaler.com/topics/kafka-architecture/
+- https://medium.com/@cobch7/kafka-architecture-43333849e0f4
+
 # Kafka
 
 Let’s break this down into its core components so you get a crystal-clear understanding:
